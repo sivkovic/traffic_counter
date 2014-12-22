@@ -14,10 +14,12 @@ def crop_image(image, x, y, h, w):
     res = res.crop(x, y, h, w)
     return res
 
+
 vid = VirtualCamera('/home/sinisa/Downloads/20141112-071614.mpeg', 'video')
 background = vid.getImage()
 field_1 = background
 field_1 = crop_image(field_1, fieldDim1[0], fieldDim1[1], fieldDim1[2], fieldDim1[3])
+
 field_2 = background
 field_2 = crop_image(field_2, fieldDim2[0], fieldDim2[1], fieldDim2[2], fieldDim2[3])
 field_2.show()
