@@ -3,8 +3,9 @@ import datetime
 
 class Field():
 
-    def __init__(self, image, x, y, h, w, minsize):
-        self.image = image.crop(x, y, h, w)
+    def __init__(self, image, x, y, h, w, minsize, name=None):
+        self.name = name
+        self.image = image
         self.x = x
         self.y = y
         self.h = h
@@ -52,7 +53,7 @@ class Counter():
         self.cnt = 0
         self.rate = 0
         self.framerate = framerate
-        self.starttime = datetime.datetime(hour=hour, minute=minute, second=second)
+        self.starttime = datetime.datetime(2014, 1, 1, hour=hour, minute=minute, second=second)
         self.time = self.starttime
         self.moving_cars = []
         self.passed_cars = []
@@ -62,19 +63,22 @@ class Counter():
         self.input_fields.append(fld)
 
     def settime(self):
-        if self.rate == 1:
+        if self.rate == self.framerate:
             self.rate = 0
-            self.time = self.starttime + datetime.timedelta(second=1)
-        self.rate = self.rate + 1/self.framerate
+            self.time = self.time + datetime.timedelta(seconds=1)
+        self.rate = self.rate + 1
 
     def detect(self, img):
         for f in self.input_fields:
+            img.show()
             self.settime()
             if f.detect(img):
                 self.cnt = self.cnt + 1
-                self.moving_cars.append(Car(self.starttime))
-        for f in self.output_fields:
-            carNum = 0
-            if f.detect(img):
-                carNum = carNum + 1
-                pass
+                print (f.name + ": " + str(self.cnt))
+                print(self.time)
+                #self.moving_cars.append(Car(self.starttime))
+        # for f in self.output_fields:
+        #     carNum = 0
+        #     if f.detect(img):
+        #         carNum = carNum + 1
+        #         pass

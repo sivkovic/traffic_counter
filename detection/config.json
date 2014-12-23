@@ -1,0 +1,7 @@
+{
+    "fields": [
+        {"x": 445, "y": 333, "h": 90, "w": 60, "minsize": 120, "ref_frame": 13, "name": "left"},
+        {"x": 555, "y": 333, "h": 90, "w": 60, "minsize": 120, "ref_frame": 1, "name": "right"}
+    ]
+
+}
