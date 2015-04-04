@@ -54,7 +54,6 @@ class Blob(Field):
     def from_dict(self):
         pass
 
-    @classmethod
     def to_dict(self):
         pass
 
@@ -75,3 +74,10 @@ class Histogram(Field):
         if mean >= self.threshold:
             return True
         return False
+
+    @classmethod
+    def from_dict(self):
+        pass
+
+    def to_dict(self):
+        pass

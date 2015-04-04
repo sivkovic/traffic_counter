@@ -29,6 +29,21 @@ class Field():
             self.carPassing = False
         return False
 
+    def detect_histogram(self, img):
+        threshold = 0.8
+        diff = self.crop_image(img) - self.image
+        matrix = diff.getNumpy()
+        mean = matrix.mean()
+        print mean
+        if mean >= threshold:
+            if not self.carPassing:
+                self.carPassing = True
+                return True
+        else:
+            self.carPassing = False
+        return False
+
+
 class Car():
 
     def __init__(self, hour, minute, second):
@@ -72,9 +87,9 @@ class Counter():
         for f in self.input_fields:
             img.show()
             self.settime()
-            if f.detect(img):
+            if f.detect_histogram(img):
                 self.cnt = self.cnt + 1
-                print (f.name + ": " + str(self.cnt))
+                print(f.name + ": " + str(self.cnt))
                 print(self.time)
                 #self.moving_cars.append(Car(self.starttime))
         # for f in self.output_fields:
