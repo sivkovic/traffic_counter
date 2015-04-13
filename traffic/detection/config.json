@@ -3,7 +3,18 @@
 
     },
     "inputs": [
-        {"x": 445, "y": 333, "h": 90, "w": 60, "minsize": 200, "ref_frame": 13, "name": "left"},
+        {
+            "@type": "Histogram",
+            "name": "left",
+            "cord": {
+                "x": 445,
+                "y": 333,
+                "h": 90,
+                "w": 60,
+                "frame": 13
+            }
+            "threshold": 200,
+        },
         {"x": 555, "y": 333, "h": 90, "w": 60, "minsize": 200, "ref_frame": 1, "name": "right"}
     ],
     "output": []

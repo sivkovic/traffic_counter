@@ -2,24 +2,36 @@ __author__ = 'sinisa'
 import uuid
 from SimpleCV import Color
 
+
 class Field(object):
 
-    def __init__(self, image, x, y, w, h, field_id=None):
+    def __init__(self, vid, x, y, w, h, frame=1, field_id=None):
         '''
         :param image: Whole image
         :param x: Coordinate x
         :param y: Coordinate y
         :param h: Height
         :param w: Width
+        :param frame: Empty frame
         :param field_id: Field_id
         :return:
         '''
         self._id = field_id or uuid.uuid4()
         self.x = x
         self.y = y
-        self.h = h
         self.w = w
-        self.image = self.crop_image(image, x, y, w, h)
+        self.h = h
+        self.image = self.get_empty(vid, x, y, w, h, frame)
+
+    @classmethod
+    def get_empty(cls, vid, x, y, h, w, frame):
+        img = vid.getImage()
+        img = cls.crop_image(img, x, y, h, w)
+        cnt = 1
+        while(cnt < frame):
+            img = vid.getImage()
+        img = cls.crop_image(img, x, y, h, w)
+        return img
 
     @classmethod
     def crop_image(cls, img, x, y, w, h):
@@ -30,16 +42,22 @@ class Field(object):
     def detect(self, img):
         pass
 
-    def show(self, img):
-        img.drawRectangle(self.x, self.y, self.w, self.h, color=Color.RED)
+    def show(self, img, color=Color.RED):
+        img.drawRectangle(self.x, self.y, self.w, self.h, color=color)
 
+    def to_dict(self):
+        pass
+
+    @classmethod
+    def from_dict(cls, d):
+        pass
 
 class Blob(Field):
 
     DEFAULT_SIZE = 50
 
-    def __init__(self, image, x, y, w, h, field_id=None, minsize=DEFAULT_SIZE):
-        super(Blob, self).__init__(image, x, y, w, h, field_id)
+    def __init__(self, image, x, y, w, h, frame=1, field_id=None, minsize=DEFAULT_SIZE):
+        super(Blob, self).__init__(image, x, y, w, h, frame, field_id)
         self.minsize = minsize
 
     def detect(self, img):
@@ -50,11 +68,11 @@ class Blob(Field):
             return True
         return False
 
-    @classmethod
-    def from_dict(self):
+    def to_dict(self):
         pass
 
-    def to_dict(self):
+    @classmethod
+    def from_dict(self, d):
         pass
 
 
@@ -62,8 +80,8 @@ class Histogram(Field):
 
     DEFAULT_THRESHOLD = 0.5
 
-    def __init__(self, image, x, y, w, h, field_id=None, threshold=DEFAULT_THRESHOLD):
-        super(Histogram, self).__init__(image, x, y, w, h, field_id=None)
+    def __init__(self, vid, x, y, w, h, frame=1, field_id=None, threshold=DEFAULT_THRESHOLD):
+        super(Histogram, self).__init__(vid, x, y, w, h, frame, field_id)
         self.threshold = threshold
 
     def detect(self, img):
@@ -75,9 +93,15 @@ class Histogram(Field):
             return True
         return False
 
-    @classmethod
-    def from_dict(self):
-        pass
-
     def to_dict(self):
         pass
+
+    @classmethod
+    def from_dict(cls, d):
+        return cls(d['vid'], d['cord']['x'], d['cord']['y'],
+                   d['cord']['w'], d['cord']['h'],
+                   d['cord'].get('frame', 1),
+                   d.get('id', uuid.uuid4()),
+                   d.get('threshold', cls.DEFAULT_THRESHOLD)
+        )
+
